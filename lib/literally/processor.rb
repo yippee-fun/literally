@@ -17,7 +17,7 @@ class Literally::Processor < Literally::BaseProcessor
 		}
 
 		if (keywords = node.parameters&.keywords)
-			foo = keywords.map do |keyword|
+			signature = keywords.map do |keyword|
 				loc = keyword.value.location
 				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
 				"#{keyword.name}: #{keyword.value.slice}"
@@ -27,7 +27,7 @@ class Literally::Processor < Literally::BaseProcessor
 		@annotations << [
 			start = node.rparen_loc.start_offset + 1,
 			block.opening_loc.end_offset - start,
-			";binding.assert(#{foo});__literally_returns__ = (;"
+			";binding.assert(#{signature});__literally_returns__ = (;"
 		]
 
 		@annotations << [
