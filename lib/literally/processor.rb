@@ -38,10 +38,11 @@ class Literally::Processor < Literally::BaseProcessor
 			]
 		end
 
+		return_type = node.slice[(call.start_offset)...(call.closing_loc.end_offset)]
 		@annotations << [
 			block.closing_loc.start_offset,
 			0,
-			";);binding.assert(__literally_returns__: #{call.name});__literally_returns__;",
+			";);binding.assert(__literally_returns__: #{return_type});__literally_returns__;",
 		]
 	end
 end
