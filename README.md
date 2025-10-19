@@ -72,7 +72,8 @@ In this case, you can wrap the type in parentheses
 
 ```ruby
 def say_hello(names = ([String])) = String do
-	# names here must be an array with the class String inside it.
+	# the positional argument `names` here must be
+	# an array with the class `String` and nothing else inside it.
 end
 ```
 
