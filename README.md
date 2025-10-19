@@ -91,6 +91,32 @@ end
 
 Again, defaults don’t need to be specified here because the default will always be an empty Hash.
 
+### Splats with named types
+
+Let’s say you have a type called Position.
+
+```ruby
+Position = _Tuple(Integer, Integer, Integer)
+```
+
+And you want to accept `*position` as `Position`, you could specify that like this
+
+```ruby
+def move_to(position = [*Position]) = _Void do
+end
+```
+
+Same with keyword arguments and keyword splats
+
+```ruby
+Position = _Map(x: Integer, y: Integer, z: Integer)
+```
+
+```ruby
+def move_to(position: {**Position}) = _Void do
+end
+```
+
 ### Blocks
 
 Blocks are always optional and always Procs so there’s no reason to type them.
