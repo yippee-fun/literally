@@ -38,7 +38,11 @@ class Literally::Processor < Literally::BaseProcessor
 			]
 		end
 
-		return_type = node.slice[(call.start_offset)...(call.closing_loc.end_offset)]
+		return_type = if call.closing_loc
+			node.slice[(call.start_offset)...(call.closing_loc.end_offset)]
+		else
+			call.name
+		end
 		@annotations << [
 			block.closing_loc.start_offset,
 			0,
