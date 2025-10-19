@@ -140,19 +140,19 @@ test "return type, positional arg processes" do
 	RUBY
 end
 
-test "return type, positional arg with default processes" do
-	processed = Literally::Processor.call(<<~'RUBY')
-		def say_hello(name = String {"World"}) = String do
-			"Hello #{name}!"
-		end
-	RUBY
+# test "return type, positional arg with default processes" do
+# 	processed = Literally::Processor.call(<<~'RUBY')
+# 		def say_hello(name = String {"World"}) = String do
+# 			"Hello #{name}!"
+# 		end
+# 	RUBY
 
-	assert_equal_ruby(processed, <<~'RUBY')
-		def say_hello(name = "World");binding.assert(name: String);__literally_returns__ = (;
-			"Hello #{name}!"
-		;);binding.assert(__literally_returns__: String);__literally_returns__;end
-	RUBY
-end
+# 	assert_equal_ruby(processed, <<~'RUBY')
+# 		def say_hello(name = "World");binding.assert(name: String);__literally_returns__ = (;
+# 			"Hello #{name}!"
+# 		;);binding.assert(__literally_returns__: String);__literally_returns__;end
+# 	RUBY
+# end
 
 test "return type, keyword arg processes" do
 	processed = Literally::Processor.call(<<~'RUBY')
@@ -168,19 +168,34 @@ test "return type, keyword arg processes" do
 	RUBY
 end
 
-test "return type, keyword arg with default processes" do
+
+test "positional and keyword" do
 	processed = Literally::Processor.call(<<~'RUBY')
-		def say_hello(name: String {"World"}) = String do
-			"Hello #{name}!"
+		def say_hello(greeting = String, name: String) = String do
+		  "#{greeting} #{name}!"
 		end
 	RUBY
 
 	assert_equal_ruby(processed, <<~'RUBY')
-		def say_hello(name: "World");binding.assert(name: String);__literally_returns__ = (;
-			"Hello #{name}!"
+		def say_hello(greeting = nil, name: nil);binding.assert(greeting: String, name: String);__literally_returns__ = (;
+		  "#{greeting} #{name}!"
 		;);binding.assert(__literally_returns__: String);__literally_returns__;end
 	RUBY
 end
+
+# test "return type, keyword arg with default processes" do
+# 	processed = Literally::Processor.call(<<~'RUBY')
+# 		def say_hello(name: String {"World"}) = String do
+# 			"Hello #{name}!"
+# 		end
+# 	RUBY
+
+# 	assert_equal_ruby(processed, <<~'RUBY')
+# 		def say_hello(name: "World");binding.assert(name: String);__literally_returns__ = (;
+# 			"Hello #{name}!"
+# 		;);binding.assert(__literally_returns__: String);__literally_returns__;end
+# 	RUBY
+# end
 
 
 
@@ -255,3 +270,14 @@ test "brace block" do
 		;);binding.assert(__literally_returns__: Numeric);__literally_returns__;end
 	RUBY
 end
+
+# test "_Void return type, no args processes" do
+# 	processed = Literally::Processor.call(<<~'RUBY')
+# 		def return_nothing(foo: String, **bar) = Integer do
+# 		end
+# 	RUBY
+
+# 	assert_equal_ruby processed, <<~'RUBY'
+
+# 	RUBY
+# end

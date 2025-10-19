@@ -16,32 +16,35 @@ class Literally::Processor < Literally::BaseProcessor
 			}
 		}
 
-		if (keywords = node.parameters&.keywords)&.any?
-			signature = keywords.map do |keyword|
-				loc = keyword.value.location
-				# TODO: handle both required, optional, and defaulted keyword args
-				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
-				"#{keyword.name}: #{keyword.value.slice}"
-			end.join(", ")
-		end
+		# TODO 4: Check for invalid parameter kinds
+
+		signature = []
 
 		if (optionals = node.parameters&.optionals)&.any?
-			signature = optionals.map do |optional|
+			signature << optionals.map do |optional|
 				loc = optional.value.location
-				# TODO: handle both required, optional, and defaulted positional args
+				# TODO 2: handle both required, optional, and defaulted positional args
 				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
 				"#{optional.name}: #{optional.value.slice}"
 			end.join(", ")
 		end
 
-		# TODO: handle sigs with both keywords and optionals
-		# TODO: handle sigs with splats
+		if (keywords = node.parameters&.keywords)&.any?
+			signature << keywords.map do |keyword|
+				loc = keyword.value.location
+				# TODO 3: handle both required, optional, and defaulted keyword args
+				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
+				"#{keyword.name}: #{keyword.value.slice}"
+			end.join(", ")
+		end
+
+		# TODO 5: handle sigs with splats
 
 		if node.rparen_loc
 			@annotations << [
 				start = node.rparen_loc.start_offset + 1,
 				block.opening_loc.end_offset - start,
-				";binding.assert(#{signature});__literally_returns__ = (;",
+				";binding.assert(#{signature.join(", ")});__literally_returns__ = (;",
 			]
 		else
 			@annotations << [
