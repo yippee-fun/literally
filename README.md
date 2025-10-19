@@ -16,7 +16,8 @@ end
 
 This will add a runtime assertion that the return value is a `String`.
 
-Note, the return value must be specified for Literally to process the method at all. You can always specify that it returns `_Void` or `_Any?`.
+> [!NOTE]
+> The return value must be specified for Literally to process the method at all. You can always specify that it returns `_Void` or `_Any?`.
 
 ### Positional arguments
 
