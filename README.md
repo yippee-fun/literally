@@ -60,6 +60,22 @@ This is the equivalent to `def say_hello(*names)`. In this context `[String]` ma
 
 You don’t need to specify a default because splats always default to an empty Array.
 
+But what if you wanted to use the literal value `[String]` itself as a type? `[String]` is in fact a type that only matches an array that contains the String class.
+
+As you can see
+
+```ruby
+[String] === [String]
+```
+
+In this case, you can wrap the type in parentheses
+
+```ruby
+def say_hello(names = ([String])) = String do
+	# names here must be an array with the class String inside it.
+end
+```
+
 ### Keyword splats
 
 Keyword splats are the same but using a Hash literal to specify K/V types. In this context, `{String => String}` makes the `**greetings` keyword splat and types it as `_Hash(String, String)`.
