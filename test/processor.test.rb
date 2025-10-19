@@ -332,3 +332,32 @@ test "return type, keyword arg with default processes" do
 		;);binding.assert(__literally_returns__: String);__literally_returns__;end
 	RUBY
 end
+
+test "return type, keyword arg with default processes" do
+	processed = Literally::Processor.call(<<~'RUBY')
+		def say_hello(names: {_Deferred { foo } => String}) = String do
+			"Hello #{names.join(", ")}!"
+		end
+	RUBY
+
+	assert_equal_ruby(processed, <<~'RUBY')
+		def say_hello(**names);binding.assert(names: ::Literal::_Hash(_Deferred { foo }, String));__literally_returns__ = (;
+			"Hello #{names.join(", ")}!"
+		;);binding.assert(__literally_returns__: String);__literally_returns__;end
+	RUBY
+end
+
+
+test "return type, keyword arg with default processes" do
+	processed = Literally::Processor.call(<<~'RUBY')
+		def say_hello(names: ({_Deferred { foo } => String})) = String do
+			"Hello #{names.join(", ")}!"
+		end
+	RUBY
+
+	assert_equal_ruby(processed, <<~'RUBY')
+		def say_hello(names: nil);binding.assert(names: ({_Deferred { foo } => String}));__literally_returns__ = (;
+			"Hello #{names.join(", ")}!"
+		;);binding.assert(__literally_returns__: String);__literally_returns__;end
+	RUBY
+end

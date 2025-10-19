@@ -70,10 +70,19 @@ class Literally::Processor < Literally::BaseProcessor
 
 		if (keywords = node.parameters&.keywords)&.any?
 			signature << keywords.map do |keyword|
-				default = "nil"
-				type = keyword.value.slice
+				case keyword
+				# Splat
+				in { value: Prism::HashNode[elements: [Prism::AssocNode[key: key_type_node, value: val_type_node]]] => value }
+					type = "::Literal::_Hash(#{key_type_node.slice}, #{val_type_node.slice})"
 
-				if keyword in {
+					# Make the parameter a splat
+					@annotations << [keyword.name_loc.start_offset, 0, "**"]
+
+					# Remove the type signature (the default value) and the colon at the end of the keyword
+					@annotations << [keyword.name_loc.end_offset - 1, value.closing_loc.end_offset - keyword.name_loc.end_offset + 1, ""]
+					next "#{keyword.name}: #{type}"
+				# With default
+				in {
 					value: Prism::CallNode[
 						block: Prism::BlockNode[
 							body: Prism::StatementsNode => default_node
@@ -87,15 +96,17 @@ class Literally::Processor < Literally::BaseProcessor
 					else
 						call.name
 					end
+				# No default
+				else
+					default = "nil"
+					type = keyword.value.slice
 				end
 
-				loc = keyword.value.location
-				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, default]
+				value_location = keyword.value.location
+				@annotations << [value_location.start_offset, value_location.end_offset - value_location.start_offset, default]
 				"#{keyword.name}: #{type}"
 			end.join(", ")
 		end
-
-		# TODO 5: handle sigs with splats
 
 		if node.rparen_loc
 			@annotations << [
