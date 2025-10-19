@@ -22,19 +22,56 @@ class Literally::Processor < Literally::BaseProcessor
 
 		if (optionals = node.parameters&.optionals)&.any?
 			signature << optionals.map do |optional|
+				default = "nil"
+				type = optional.value.slice
+				# binding.irb
+
+				if optional in {
+					value: Prism::CallNode[
+						block: Prism::BlockNode[
+							body: Prism::StatementsNode => default_node
+						]
+					] => call
+				}
+					default = "(#{default_node.slice})"
+
+					type = if call.closing_loc
+						node.slice[(call.start_offset)...(call.closing_loc.end_offset)]
+					else
+						call.name
+					end
+				end
+
 				loc = optional.value.location
-				# TODO 2: handle both required, optional, and defaulted positional args
-				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
-				"#{optional.name}: #{optional.value.slice}"
+				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, default]
+				"#{optional.name}: #{type}"
 			end.join(", ")
 		end
 
 		if (keywords = node.parameters&.keywords)&.any?
 			signature << keywords.map do |keyword|
+				default = "nil"
+				type = keyword.value.slice
+
+				if keyword in {
+					value: Prism::CallNode[
+						block: Prism::BlockNode[
+							body: Prism::StatementsNode => default_node
+						]
+					] => call
+				}
+					default = "(#{default_node.slice})"
+
+					type = if call.closing_loc
+						node.slice[(call.start_offset)...(call.closing_loc.end_offset)]
+					else
+						call.name
+					end
+				end
+
 				loc = keyword.value.location
-				# TODO 3: handle both required, optional, and defaulted keyword args
-				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
-				"#{keyword.name}: #{keyword.value.slice}"
+				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, default]
+				"#{keyword.name}: #{type}"
 			end.join(", ")
 		end
 
