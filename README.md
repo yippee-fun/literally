@@ -1,4 +1,4 @@
-# Literally
+# Literally [WIP]
 
 Literally is a tiny pre-processor for Ruby that lets you write methods with runtime type checking using [Literal](https://www.literal.fun).
 
