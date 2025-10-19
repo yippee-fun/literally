@@ -27,8 +27,6 @@ jobs:
           bundler-cache: false
 
       - name: Install dependencies
-        env:
-          BUNDLE_WITHOUT: "development"
         run: |
           bundle install --jobs 4
 
