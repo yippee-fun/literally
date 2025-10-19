@@ -30,16 +30,19 @@ class Literally::Processor < Literally::BaseProcessor
 
 		if (optionals = node.parameters&.optionals)&.any?
 			signature << optionals.map do |optional|
-				default = "nil"
-				type = optional.value.slice
+				case optional
+				# Splat
+				in { value: Prism::ArrayNode[elements: [type_node]] => value }
+					type = "::Literal::_Array(#{type_node.slice})"
 
-
-				if optional in { value: Prism::ArrayNode[elements: [generic_type_parameter]] => value }
-					type = "::Literal::_Array(#{generic_type_parameter.slice})"
+					# Make the parameter a splat
 					@annotations << [optional.name_loc.start_offset, 0, "*"]
+
+					# Remove the type signature (the default value)
 					@annotations << [optional.operator_loc.start_offset, value.closing_loc.end_offset - optional.operator_loc.start_offset, ""]
 					next "#{optional.name}: #{type}"
-				elsif optional in {
+				# With default
+				in {
 					value: Prism::CallNode[
 						block: Prism::BlockNode[
 							body: Prism::StatementsNode => default_node
@@ -53,10 +56,14 @@ class Literally::Processor < Literally::BaseProcessor
 					else
 						call.name
 					end
+				# No default
+				else
+					default = "nil"
+					type = optional.value.slice
 				end
 
-				loc = optional.value.location
-				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, default]
+				value_location = optional.value.location
+				@annotations << [value_location.start_offset, value_location.end_offset - value_location.start_offset, default]
 				"#{optional.name}: #{type}"
 			end.join(", ")
 		end
