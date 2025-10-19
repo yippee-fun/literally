@@ -19,6 +19,7 @@ class Literally::Processor < Literally::BaseProcessor
 		if (keywords = node.parameters&.keywords)&.any?
 			signature = keywords.map do |keyword|
 				loc = keyword.value.location
+				# TODO: handle both required, optional, and defaulted keyword args
 				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
 				"#{keyword.name}: #{keyword.value.slice}"
 			end.join(", ")
@@ -27,10 +28,14 @@ class Literally::Processor < Literally::BaseProcessor
 		if (optionals = node.parameters&.optionals)&.any?
 			signature = optionals.map do |optional|
 				loc = optional.value.location
+				# TODO: handle both required, optional, and defaulted positional args
 				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
 				"#{optional.name}: #{optional.value.slice}"
 			end.join(", ")
 		end
+
+		# TODO: handle sigs with both keywords and optionals
+		# TODO: handle sigs with splats
 
 		if node.rparen_loc
 			@annotations << [
