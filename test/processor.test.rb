@@ -86,9 +86,9 @@ end
 
 test "positionals" do
 	processed = Literally::Processor.call(<<~RUBY)
-		def foo(a = Integer, b = String) = Numeric {
+		def foo(a = Integer, b = String) = Numeric do
 			a
-		}
+		end
 	RUBY
 
 	assert_equal_ruby processed, <<~RUBY

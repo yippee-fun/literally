@@ -24,6 +24,14 @@ class Literally::Processor < Literally::BaseProcessor
 			end.join(", ")
 		end
 
+		if (optionals = node.parameters&.optionals)
+			signature = optionals.map do |optional|
+				loc = optional.value.location
+				@annotations << [loc.start_offset, loc.end_offset - loc.start_offset, "nil"]
+				"#{optional.name}: #{optional.value.slice}"
+			end.join(", ")
+		end
+
 		if node.rparen_loc
 			@annotations << [
 				start = node.rparen_loc.start_offset + 1,
