@@ -62,7 +62,7 @@ You don’t need to specify a default because splats always default to an empty 
 
 ### Keyword splats
 
-Keyword splats are the same but using a Hash literal to specify K/V types.
+Keyword splats are the same but using a Hash literal to specify K/V types. In this context, `{String => String}` makes the `**greetings` keyword splat and types it as `_Hash(String, String)`.
 
 ```ruby
 def say_hello(greetings: {String => String}) = String do
