@@ -1,4 +1,4 @@
-	# frozen_string_literal: true
+# frozen_string_literal: true
 
 class Literally::Processor < Literally::BaseProcessor
 	#: (Prism::DefNode) -> void
@@ -28,20 +28,20 @@ class Literally::Processor < Literally::BaseProcessor
 			@annotations << [
 				start = node.rparen_loc.start_offset + 1,
 				block.opening_loc.end_offset - start,
-				";binding.assert(#{signature});__literally_returns__ = (;"
+				";binding.assert(#{signature});__literally_returns__ = (;",
 			]
 		else
 			@annotations << [
 				start = node.equal_loc.start_offset - 1,
 				block.opening_loc.end_offset - start,
-				";__literally_returns__ = (;"
+				";__literally_returns__ = (;",
 			]
 		end
 
 		@annotations << [
 			block.closing_loc.start_offset,
 			0,
-			";);binding.assert(__literally_returns__: #{call.name});__literally_returns__;"
+			";);binding.assert(__literally_returns__: #{call.name});__literally_returns__;",
 		]
 	end
 end

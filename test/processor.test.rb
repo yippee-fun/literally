@@ -14,7 +14,6 @@ test "basic" do
 	RUBY
 end
 
-
 test "no args" do
 	processed = Literally::Processor.call(<<~RUBY)
 		def foo = Numeric do
@@ -84,7 +83,6 @@ test "brace block" do
 		;);binding.assert(__literally_returns__: Numeric);__literally_returns__;end
 	RUBY
 end
-
 
 test "positionals" do
 	processed = Literally::Processor.call(<<~RUBY)
