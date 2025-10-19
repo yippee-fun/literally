@@ -56,5 +56,11 @@ class Literally::Processor < Literally::BaseProcessor
 			0,
 			";);binding.assert(__literally_returns__: #{return_type});__literally_returns__;",
 		]
+
+		@annotations << [
+			start = block.closing_loc.start_offset,
+			block.closing_loc.end_offset - start,
+			"end",
+		]
 	end
 end
