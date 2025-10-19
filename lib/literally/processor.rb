@@ -16,7 +16,15 @@ class Literally::Processor < Literally::BaseProcessor
 			}
 		}
 
-		# TODO 4: Check for invalid parameter kinds
+		if node.parameters&.requireds&.any?
+			raise "Don’t use requireds!"
+		elsif node.parameters&.rest&.any?
+			raise "Don’t use rests!"
+		elsif node.parameters&.posts&.any?
+			raise "Don’t use posts, whatever they are."
+		elsif node.parameters&.keyword_rest&.any?
+			raise "Don’t use keyword rest."
+		end
 
 		signature = []
 
