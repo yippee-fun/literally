@@ -197,7 +197,15 @@ test "return type, keyword arg with default processes" do
 	RUBY
 end
 
-
+test "return type, keyword arg with default processes" do
+	assert_raises(RuntimeError) do
+		Literally::Processor.call(<<~'RUBY')
+			def say_hello(foo, name: String {"World"}) = String do
+				"Hello #{name}!"
+			end
+		RUBY
+	end
+end
 
 
 test "basic" do
@@ -281,3 +289,46 @@ end
 
 # 	RUBY
 # end
+
+
+test "return type, keyword arg with default processes" do
+	processed = Literally::Processor.call(<<~'RUBY')
+		def say_hello(names = [String]) = String do
+			"Hello #{names.join(", ")}!"
+		end
+	RUBY
+
+	assert_equal_ruby(processed, <<~'RUBY')
+		def say_hello(*names );binding.assert(names: ::Literal::_Array(String));__literally_returns__ = (;
+			"Hello #{names.join(", ")}!"
+		;);binding.assert(__literally_returns__: String);__literally_returns__;end
+	RUBY
+end
+
+test "return type, keyword arg with default processes" do
+	processed = Literally::Processor.call(<<~'RUBY')
+		def say_hello(names = [_Deferred { foo }]) = String do
+			"Hello #{names.join(", ")}!"
+		end
+	RUBY
+
+	assert_equal_ruby(processed, <<~'RUBY')
+		def say_hello(*names );binding.assert(names: ::Literal::_Array(_Deferred { foo }));__literally_returns__ = (;
+			"Hello #{names.join(", ")}!"
+		;);binding.assert(__literally_returns__: String);__literally_returns__;end
+	RUBY
+end
+
+test "return type, keyword arg with default processes" do
+	processed = Literally::Processor.call(<<~'RUBY')
+		def say_hello(names = ([String])) = String do
+			"Hello #{names.join(", ")}!"
+		end
+	RUBY
+
+	assert_equal_ruby(processed, <<~'RUBY')
+		def say_hello(names = nil);binding.assert(names: ([String]));__literally_returns__ = (;
+			"Hello #{names.join(", ")}!"
+		;);binding.assert(__literally_returns__: String);__literally_returns__;end
+	RUBY
+end

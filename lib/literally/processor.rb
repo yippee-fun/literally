@@ -32,9 +32,14 @@ class Literally::Processor < Literally::BaseProcessor
 			signature << optionals.map do |optional|
 				default = "nil"
 				type = optional.value.slice
-				# binding.irb
 
-				if optional in {
+
+				if optional in { value: Prism::ArrayNode[elements: [generic_type_parameter]] => value }
+					type = "::Literal::_Array(#{generic_type_parameter.slice})"
+					@annotations << [optional.name_loc.start_offset, 0, "*"]
+					@annotations << [optional.operator_loc.start_offset, value.closing_loc.end_offset - optional.operator_loc.start_offset, ""]
+					next "#{optional.name}: #{type}"
+				elsif optional in {
 					value: Prism::CallNode[
 						block: Prism::BlockNode[
 							body: Prism::StatementsNode => default_node
