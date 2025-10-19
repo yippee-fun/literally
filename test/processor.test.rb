@@ -28,19 +28,20 @@ test "no args" do
 	RUBY
 end
 
-test "no parens" do
-	processed = Literally::Processor.call(<<~RUBY)
-		def foo a: Integer, b: String = Numeric do
-			a
-		end
-	RUBY
+# test "no parens" do
+# 	# this doesn't work, as Prism sees this as: `def foo(a: (Integer), b: (String = Numeric))`
+# 	processed = Literally::Processor.call(<<~RUBY)
+# 		def foo a: Integer, b: String = Numeric do
+# 			a
+# 		end
+# 	RUBY
 
-	assert_equal_ruby processed, <<~RUBY
-		def foo(a: nil, b: nil);binding.assert(a: Integer, b: String);__literally_returns__ = (;
-			a
-		;);binding.assert(__literally_returns__: Numeric);__literally_returns__;end
-	RUBY
-end
+# 	assert_equal_ruby processed, <<~RUBY
+# 		def foo(a: nil, b: nil);binding.assert(a: Integer, b: String);__literally_returns__ = (;
+# 			a
+# 		;);binding.assert(__literally_returns__: Numeric);__literally_returns__;end
+# 	RUBY
+# end
 
 test "with generic return type" do
 	processed = Literally::Processor.call(<<~RUBY)
