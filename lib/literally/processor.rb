@@ -74,7 +74,6 @@ class Literally::Processor < Literally::BaseProcessor
 
 		if (keywords = node.parameters&.keywords)&.any?
 			signature << keywords.map do |keyword|
-binding.irb
 				case keyword
 				# Splat
 				in { value: Prism::HashNode[elements: [Prism::AssocNode[key: key_type_node, value: val_type_node]]] => value }
