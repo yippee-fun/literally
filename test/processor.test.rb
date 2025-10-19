@@ -361,3 +361,31 @@ test "return type, keyword arg with default processes" do
 		;);binding.assert(__literally_returns__: String);__literally_returns__;end
 	RUBY
 end
+
+test "arg splat with named type" do
+	processed = Literally::Processor.call(<<~'RUBY')
+		def move_to(position = [*Position]) = _Void do
+			do_something
+		end
+	RUBY
+
+	assert_equal processed, <<~'RUBY'
+		def move_to(*position );binding.assert(position: Position);__literally_returns__ = (;
+			do_something
+		;);binding.assert(__literally_returns__: _Void);__literally_returns__;end
+	RUBY
+end
+
+test "kwarg splat with named type" do
+	processed = Literally::Processor.call(<<~'RUBY')
+		def move_to(position: {**Position}) = _Void do
+			do_something
+		end
+	RUBY
+
+	assert_equal processed, <<~'RUBY'
+		def move_to(**position);binding.assert(position: Position);__literally_returns__ = (;
+			do_something
+		;);binding.assert(__literally_returns__: _Void);__literally_returns__;end
+	RUBY
+end

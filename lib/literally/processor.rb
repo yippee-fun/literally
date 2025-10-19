@@ -33,7 +33,11 @@ class Literally::Processor < Literally::BaseProcessor
 				case optional
 				# Splat
 				in { value: Prism::ArrayNode[elements: [type_node]] => value }
-					type = "::Literal::_Array(#{type_node.slice})"
+					if type_node in Prism::SplatNode
+						type = type_node.expression.slice
+					else
+						type = "::Literal::_Array(#{type_node.slice})"
+					end
 
 					# Make the parameter a splat
 					@annotations << [optional.name_loc.start_offset, 0, "*"]
@@ -70,10 +74,20 @@ class Literally::Processor < Literally::BaseProcessor
 
 		if (keywords = node.parameters&.keywords)&.any?
 			signature << keywords.map do |keyword|
+binding.irb
 				case keyword
 				# Splat
 				in { value: Prism::HashNode[elements: [Prism::AssocNode[key: key_type_node, value: val_type_node]]] => value }
 					type = "::Literal::_Hash(#{key_type_node.slice}, #{val_type_node.slice})"
+
+					# Make the parameter a splat
+					@annotations << [keyword.name_loc.start_offset, 0, "**"]
+
+					# Remove the type signature (the default value) and the colon at the end of the keyword
+					@annotations << [keyword.name_loc.end_offset - 1, value.closing_loc.end_offset - keyword.name_loc.end_offset + 1, ""]
+					next "#{keyword.name}: #{type}"
+				in { value: Prism::HashNode[elements: [Prism::AssocSplatNode[value: val_type_node]]] => value }
+					type = val_type_node.slice
 
 					# Make the parameter a splat
 					@annotations << [keyword.name_loc.start_offset, 0, "**"]
