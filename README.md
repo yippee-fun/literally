@@ -10,7 +10,7 @@ You can specify a return type for a method.
 
 ```ruby
 def say_hello = String do
-	"Hello World!"
+  "Hello World!"
 end
 ```
 
@@ -25,7 +25,7 @@ We use Ruby’s _default_ value for arguments as the place to specify the type.
 
 ```ruby
 def say_hello(name = String) = String do
-	"Hello #{name}!"
+  "Hello #{name}!"
 end
 ```
 
@@ -33,7 +33,7 @@ Okay, but how do we specify defaults?
 
 ```ruby
 def say_hello(name = String {"World"}) = String do
-	"Hello #{name}!"
+  "Hello #{name}!"
 end
 ```
 
@@ -43,7 +43,7 @@ Keyword arguments work the same way
 
 ```ruby
 def say_hello(name: String {"World"}) = String do
-	"Hello #{name}!"
+  "Hello #{name}!"
 end
 ```
 
@@ -53,7 +53,7 @@ Splats are typed by using an Array literal
 
 ```ruby
 def say_hello(names = [String]) = String do
-	"Hello #{names.join(", ")}!"
+  "Hello #{names.join(", ")}!"
 end
 ```
 
@@ -73,8 +73,8 @@ In this case, you can wrap the type in parentheses
 
 ```ruby
 def say_hello(names = ([String])) = String do
-	# the positional argument `names` here must be
-	# an array with the class `String` and nothing else inside it.
+  # the positional argument `names` here must be
+  # an array with the class `String` and nothing else inside it.
 end
 ```
 
@@ -84,9 +84,9 @@ Keyword splats are the same but using a Hash literal to specify K/V types. In th
 
 ```ruby
 def say_hello(greetings: {String => String}) = String do
-	greetings.map do |greeting, name|
-		"#{greeting} #{name}"
-	end.join("\n")
+  greetings.map do |greeting, name|
+    "#{greeting} #{name}"
+  end.join("\n")
 end
 ```
 
