@@ -16,14 +16,14 @@ class Literally::Processor < Literally::BaseProcessor
 			}
 		}
 
-		if node.parameters&.requireds&.any?
-			raise "Don’t use requireds!"
-		elsif node.parameters&.rest&.any?
-			raise "Don’t use rests!"
-		elsif node.parameters&.posts&.any?
-			raise "Don’t use posts, whatever they are."
-		elsif node.parameters&.keyword_rest&.any?
-			raise "Don’t use keyword rest."
+		if (requireds = node.parameters&.requireds)&.any?
+			raise TypedSignatureError.new("Typed method signatures don't allow required keyword parameters: #{requireds.inspect}")
+		elsif (rest = node.parameters&.rest)&.any?
+			raise TypedSignatureError.new("Typed method signatures don't allow a splat array parameter: #{rest.inspect}")
+		elsif (posts = node.parameters&.posts)&.any?
+			raise TypedSignatureError.new("Typed method signatures don't allow a splat hash parameter: #{posts.inspect}")
+		elsif (keyword_rest = node.parameters&.keyword_rest)&.any?
+			raise TypedSignatureError.new("Typed method signatures don't allow a splat hash parameter: #{keyword_rest.inspect}")
 		end
 
 		signature = []

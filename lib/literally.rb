@@ -18,6 +18,8 @@ module Literally
 
 	CONFIG = Configuration.new
 
+	class TypedSignatureError = Class.new(StandardError)
+
 	# Initializes Literally so that code loaded after this point will be
 	# guarded against undefined instance variable reads. You can pass an array
 	# of globs to `include:` and `exclude:`.
