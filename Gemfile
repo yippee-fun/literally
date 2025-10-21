@@ -7,6 +7,8 @@ gemspec
 
 group :test do
 	gem "quickdraw", github: "joeldrapper/quickdraw"
+	gem "minitest"
+	gem "rspec-expectations"
 	gem "simplecov", require: false, platform: :ruby
 end
 
