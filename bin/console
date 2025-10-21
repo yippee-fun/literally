@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+
+require "irb"
+require "literally"
+
+Literally.init(include: ["#{Dir.pwd}/**/*"], exclude: ["**/excluded.rb"])
+
+IRB.start(__FILE__)
