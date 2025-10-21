@@ -16,3 +16,4 @@ group :development do
 end
 
 gem "irb"
+gem "openssl"
