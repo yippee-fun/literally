@@ -172,5 +172,6 @@ class Literally::Processor < Literally::BaseProcessor
 			else
 				type = "::Literal::_Array(#{type_node.slice})"
 			end
+		end
 	end
 end
