@@ -162,15 +162,4 @@ class Literally::Processor < Literally::BaseProcessor
 
 		parameters_assertions.join(", ")
 	end
-
-	private def resolve_parameter_type(parameter_node)
-		case parameter_node
-		# Splat
-		in { value: Prism::ArrayNode[elements: [type_node]] => value }
-			if type_node in Prism::SplatNode
-				type = type_node.expression.slice
-			else
-				type = "::Literal::_Array(#{type_node.slice})"
-			end
-	end
 end
