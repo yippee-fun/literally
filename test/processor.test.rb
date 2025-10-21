@@ -198,7 +198,7 @@ test "return type, keyword arg with default processes" do
 end
 
 test "return type, keyword arg with default processes" do
-	assert_raises(RuntimeError) do
+	assert_raises(NameError) do
 		Literally::Processor.call(<<~'RUBY')
 			def say_hello(foo, name: String {"World"}) = String do
 				"Hello #{name}!"
